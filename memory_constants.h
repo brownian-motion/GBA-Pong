@@ -1,30 +1,17 @@
 #pragma once
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-typedef uint16 rgb15;
-typedef uint32 xyCoord;
-typedef struct object_attributes {
-	uint16 attribute_zero;
-	uint16 attribute_one;
-	uint16 attribute_two;
-	uint16 pad;
-} __attribute__((aligned(4))) object_attributes;
-typedef uint32 tile4bpp[8];
-typedef tile4bpp tile_block[512];
+#include "memory_types.h"
+#include "io_registers.h"
 
 #define BG0 1
 #define BG1 2
 #define BG2 4
 #define BG3 8
-#define BG4 16
-#define BG5 32
 
-#define MEM_ADDR_IO_RAM 		0x04000000
-#define MEM_ADDR_COLOR_PALETTE 	0x05000000
-#define MEM_ADDR_VRAM 			0x06000000
-#define MEM_ADDR_OAM 			0x07000000
+#define MEM_ADDR_IO_RAM 		0x04000000 	//IO Registers, range over 04000000-040003FE
+#define MEM_ADDR_COLOR_PALETTE 	0x05000000 	//BG/OBJ Palette RAM, ranges over 1 KB  05000000-050003FF
+#define MEM_ADDR_VRAM 			0x06000000 	//Video RAM, ranges over 96 KB 06000000-06017FFF 
+#define MEM_ADDR_OAM 			0x07000000	//Object attribute memory, ranges over 1KB 07000000-070003FF
 
 #define MEM_ADDR_KEYINPUT_IO_REGISTER 	0x04000130
 
@@ -44,9 +31,19 @@ typedef tile4bpp tile_block[512];
 #define REG_DISPLAY_VCOUNT (*((volatile uint32 *)(MEM_ADDR_IO_RAM + 0x0006)))  //Count of lines drawn. This varies from 0 to 227. If >= SCREEN_HEIGHT, then we're in a VBLANK
 #define REG_KEY_INPUT      (*((volatile uint32 *)(MEM_ADDR_IO_RAM + 0x0130)))
 
-#define KEY_UP     0x0040
-#define KEY_DOWN   0x0080
-#define KEY_ANY    0x03FF
+#define KEY_A 		0x0001
+#define KEY_B 		0x0002
+#define KEY_SELECT 	0x0004
+#define KEY_START 	0x0008
+#define KEY_RIGHT 	0x0010
+#define KEY_LEFT 	0x0020
+#define KEY_UP 		0x0040
+#define KEY_DOWN 	0x0080
+#define KEY_R 		0x0100
+#define KEY_L 		0x0200
+#define IRQ_ENABLE 	0x4000
+#define IRQ_COND	0x8000
+#define KEY_ANY  	0x03FF
 
 #define OBJECT_ATTRIBUTE_ZERO_Y_MASK  0xFF
 #define OBJECT_ATTRIBUTE_ONE_X_MASK  0x1FF
