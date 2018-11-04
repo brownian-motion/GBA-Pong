@@ -13,3 +13,6 @@ typedef struct object_attributes {
 } __attribute__((aligned(4))) object_attributes;
 typedef uint32 tile4bpp[8];
 typedef tile4bpp tile_block[512];
+struct v2 {
+	int x, y;
+};

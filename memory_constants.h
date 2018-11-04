@@ -41,9 +41,9 @@
 #define KEY_DOWN 	0x0080
 #define KEY_R 		0x0100
 #define KEY_L 		0x0200
+#define KEY_ANY  	0x03FF
 #define IRQ_ENABLE 	0x4000
 #define IRQ_COND	0x8000
-#define KEY_ANY  	0x03FF
 
 #define OBJECT_ATTRIBUTE_ZERO_Y_MASK  0xFF
 #define OBJECT_ATTRIBUTE_ONE_X_MASK  0x1FF
