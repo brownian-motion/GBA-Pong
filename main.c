@@ -47,9 +47,10 @@ int main(void) {
 	const int paddle_max_y = SCREEN_HEIGHT - paddle_height;
 	const struct v2 ball_max_clamp = {SCREEN_WIDTH - ball_width, SCREEN_HEIGHT - ball_height};
 	int player_velocity = 2;
-	struct v2 ball_vel = {2, 1}; // down and to the right
+	const struct v2 start_ball_vel = {2, 1}, start_ball_pos = {22, 96};
+	struct v2 ball_vel = start_ball_vel; // down and to the right
 	struct v2 player_pos = {5, 96};
-	struct v2 ball_pos = {22, 96};
+	struct v2 ball_pos = start_ball_pos;
 	struct v2 enemy_pos = {SCREEN_WIDTH - paddle_width - player_pos.x, player_pos.y}; // for symmetry
 	setObjectPosition(player_paddle_attributes, player_pos.x, player_pos.y);
 	setObjectPosition(ball_attributes, ball_pos.x, ball_pos.y);
@@ -60,10 +61,16 @@ int main(void) {
 
 	// Our main game loop
 	uint32 key_states = 0;
+	uint8 frames_until_ball_release = 32;
 	while (1) {
 		// Skip past the rest of any current V-Blank, then skip past the V-Draw
 		while (REG_DISPLAY_VCOUNT >= 160);
 		while (REG_DISPLAY_VCOUNT < 160);
+
+		if (frames_until_ball_release > 0) {
+			frames_until_ball_release--;
+			continue;
+		}
 
 		// Get current key states (REG_KEY_INPUT stores the states inverted)
 		key_states = ~REG_KEY_INPUT & KEY_ANY;
@@ -79,7 +86,7 @@ int main(void) {
 		}
 
 		// Move the enemy paddle to meet the ball rushing towards it
-		if (ball_pos.y <= enemy_pos.y - ball_height / 2) {
+		if (ball_pos.y <= enemy_pos.y + ball_height / 2) {
 			enemy_pos.y = clamp(enemy_pos.y - player_velocity, 0, paddle_max_y);
 			setObjectPosition(enemy_paddle_attributes, enemy_pos.x, enemy_pos.y);
 		} else if (ball_pos.y >= enemy_pos.y + paddle_height - ball_height / 2) {
@@ -92,16 +99,29 @@ int main(void) {
 			// This is not good physics / collision handling code.
 			ball_pos.x = player_pos.x + paddle_width;
 			ball_vel.x = -ball_vel.x;
+			if (ball_pos.y - player_pos.y > paddle_height * 3 / 4) {
+				ball_vel.y += 1;
+			} else if (ball_pos.y - player_pos.y < paddle_height / 4) {
+				ball_vel.y -= 1;
+			}
 			setObjectStartTile(ball_attributes, 6);
 		} else if ((ball_pos.x >= enemy_pos.x && ball_pos.x <= enemy_pos.x + paddle_width) && (ball_pos.y >= enemy_pos.y && ball_pos.y <= enemy_pos.y + paddle_height)) {
 			// Respond to the ball hitting the right player's paddle
 			ball_pos.x = enemy_pos.x;
 			ball_vel.x = -ball_vel.x;
+			if (ball_pos.y - enemy_pos.y > paddle_height * 3 / 4) {
+				ball_vel.y += 1;
+			} else if (ball_pos.y - enemy_pos.y < paddle_height / 4) {
+				ball_vel.y -= 1;
+			}
 			setObjectStartTile(ball_attributes, 7);
 		} else {
 			// Bounce off the walls
 			if (ball_pos.x <= 0 || ball_pos.x >= ball_max_clamp.x) {
-				ball_vel.x = -ball_vel.x;
+				ball_vel = start_ball_vel;
+				ball_pos = (struct v2) {player_pos.x + paddle_width * 2, player_pos.y + paddle_height / 2 - ball_height / 2};
+				setObjectPosition(ball_attributes, ball_pos.x, ball_pos.y);
+				frames_until_ball_release = 32;
 				setObjectStartTile(ball_attributes, 5);
 			}
 			if (ball_pos.y <= 0 || ball_pos.y >= ball_max_clamp.y) { ball_vel.y = -ball_vel.y; }
