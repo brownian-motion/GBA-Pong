@@ -47,49 +47,56 @@
 
 #define OBJECT_ATTRIBUTE_ZERO_Y_MASK  0xFF
 #define OBJECT_ATTRIBUTE_ONE_X_MASK  0x1FF
+#define OBJECT_ATTRIBUTE_TWO_TILE_MASK 0x1FF
 
 #define oam_memory ((volatile object_attributes *)MEM_ADDR_OAM)
 #define tile_memory ((volatile tile_block *)MEM_ADDR_VRAM)
 #define object_palette_memory ((volatile rgb15 *)(MEM_ADDR_COLOR_PALETTE + 0x200))
 
-static inline rgb15 rgb(unsigned short r, unsigned short g, unsigned short b){
+static inline rgb15 rgb(unsigned short r, unsigned short g, unsigned short b) {
 	return r | (g << 5) | (b << 10);
 }
 
-static inline unsigned short red(rgb15 color){
+static inline unsigned short red(rgb15 color) {
 	return color & MASK_RED;
 }
 
-static inline unsigned short green(rgb15 color){
+static inline unsigned short green(rgb15 color) {
 	return (color & MASK_GREEN) >> 5;
 }
 
-static inline unsigned short blue(rgb15 color){
+static inline unsigned short blue(rgb15 color) {
 	return (color & MASK_BLUE) >> 10;
 }
 
-static inline xyCoord xy(unsigned int x, unsigned int y){
-	return SCREEN_WIDTH*y + x;
+static inline xyCoord xy(unsigned int x, unsigned int y) {
+	return SCREEN_WIDTH * y + x;
 }
 
-static inline int getXFromCoordinate(xyCoord coordinate){
+static inline int getXFromCoordinate(xyCoord coordinate) {
 	return coordinate % SCREEN_WIDTH;
 }
 
-static inline int getYFromCoordinate(xyCoord coordinate){
+static inline int getYFromCoordinate(xyCoord coordinate) {
 	return coordinate / SCREEN_WIDTH;
 }
 
-static inline int clamp(int value, int min, int max){
-	return (value > max) ? max:((value < min) ? min : value);
+static inline int clamp(int value, int min, int max) {
+	return (value > max) ? max : ((value < min) ? min : value);
 }
 
-static inline void setObjectPosition(volatile object_attributes* object, int x, int y){
+static inline void setObjectPosition(volatile object_attributes* object, int x, int y) {
 	object->attribute_zero =
-		(object->attribute_zero & ~OBJECT_ATTRIBUTE_ZERO_Y_MASK)
-		| (y & OBJECT_ATTRIBUTE_ZERO_Y_MASK);
+	    (object->attribute_zero & ~OBJECT_ATTRIBUTE_ZERO_Y_MASK)
+	    | (y & OBJECT_ATTRIBUTE_ZERO_Y_MASK);
 
 	object->attribute_one =
-		(object->attribute_one & ~OBJECT_ATTRIBUTE_ONE_X_MASK)
-		| (x & OBJECT_ATTRIBUTE_ONE_X_MASK);
+	    (object->attribute_one & ~OBJECT_ATTRIBUTE_ONE_X_MASK)
+	    | (x & OBJECT_ATTRIBUTE_ONE_X_MASK);
+}
+
+static inline void setObjectStartTile(volatile object_attributes* object, uint8 colorIndex) {
+	object->attribute_two =
+	    (object->attribute_two & ~OBJECT_ATTRIBUTE_TWO_TILE_MASK)
+	    | (colorIndex & OBJECT_ATTRIBUTE_TWO_TILE_MASK);
 }

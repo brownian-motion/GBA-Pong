@@ -11,8 +11,8 @@ typedef struct object_attributes {
 	uint16 attribute_two;
 	uint16 pad;
 } __attribute__((aligned(4))) object_attributes;
-typedef uint32 tile4bpp[8];
-typedef tile4bpp tile_block[512];
+typedef uint32 tile4bpp[8]; // tile4bpp is 8 32-bit segments (or 16 16-bit segments)
+typedef tile4bpp tile_block[512]; // tile_block is 512 tile4bpp segments
 struct v2 {
 	int x, y;
 };
