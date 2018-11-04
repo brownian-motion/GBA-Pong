@@ -1,6 +1,8 @@
-This is a test to establish methodology of writing code for the Game Boy Advance (GBA).
+This is a simple implementation of Pong I wrote for the GameBoy Advance (GBA) as a proof-of-concept in preparation for more-complicated games.
 
-It follows [this introduction](https://www.reinterpretcast.com/writing-a-game-boy-advance-game)
+![Screenshot of the game](screenshot.png)
+
+It follows [this introduction](https://www.reinterpretcast.com/writing-a-game-boy-advance-game) for the basic approach to developing the code.
 
 #Dependencies
 
