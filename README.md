@@ -3,7 +3,7 @@ This is a test to establish methodology of writing code for the Game Boy Advance
 It follows [this introduction](https://www.reinterpretcast.com/writing-a-game-boy-advance-game)
 
 #Dependencies
-Compiling this C code into a useable state requires [the ARM module of devkitPro](http://devkitpro.org/wiki/Getting_Started/devkitARM)
+Compiling this C code into a GBA module requires [the ARM module of devkitPro](http://devkitpro.org/wiki/Getting_Started/devkitARM)
 
 Once installed, ensure `devkitpro/devkitARM/bin` is in your `PATH`
 
