@@ -1,4 +1,5 @@
 #include "memory_constants.h"
+#include "objects.h"
 
 int main(void) {
 	// Write the tiles for our sprites into the 4th tile block in VRAM.
@@ -94,24 +95,24 @@ int main(void) {
 			setObjectPosition(enemy_paddle_attributes, enemy_pos.x, enemy_pos.y);
 		}
 
-		if ((ball_pos.x >= player_pos.x && ball_pos.x <= player_pos.x + paddle_width) && (ball_pos.y >= player_pos.y && ball_pos.y <= player_pos.y + paddle_height)) {
+		if (intersects((rect_t) {ball_pos, ball_width, ball_height}, (rect_t) {player_pos, paddle_width, paddle_height})) {
 			// Respond to the ball hitting the left player's paddle
 			// This is not good physics / collision handling code.
 			ball_pos.x = player_pos.x + paddle_width;
 			ball_vel.x = -ball_vel.x;
-			if (ball_pos.y - player_pos.y > paddle_height * 3 / 4) {
+			if ((ball_pos.y - player_pos.y) > paddle_height * 3 / 4) {
 				ball_vel.y += 1;
-			} else if (ball_pos.y - player_pos.y < paddle_height / 4) {
+			} else if ((ball_pos.y - player_pos.y) < paddle_height / 4) {
 				ball_vel.y -= 1;
 			}
 			setObjectStartTile(ball_attributes, 6);
-		} else if ((ball_pos.x >= enemy_pos.x && ball_pos.x <= enemy_pos.x + paddle_width) && (ball_pos.y >= enemy_pos.y && ball_pos.y <= enemy_pos.y + paddle_height)) {
+		} else if (intersects((rect_t) {ball_pos, ball_width, ball_height}, (rect_t) {enemy_pos, paddle_width, paddle_height})) {
 			// Respond to the ball hitting the right player's paddle
-			ball_pos.x = enemy_pos.x;
+			ball_pos.x = enemy_pos.x - paddle_width;
 			ball_vel.x = -ball_vel.x;
-			if (ball_pos.y - enemy_pos.y > paddle_height * 3 / 4) {
+			if ((ball_pos.y - enemy_pos.y) > paddle_height * 3 / 4) {
 				ball_vel.y += 1;
-			} else if (ball_pos.y - enemy_pos.y < paddle_height / 4) {
+			} else if ((ball_pos.y - enemy_pos.y) < paddle_height / 4) {
 				ball_vel.y -= 1;
 			}
 			setObjectStartTile(ball_attributes, 7);
