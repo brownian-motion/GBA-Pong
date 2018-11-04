@@ -30,6 +30,8 @@ int main(void) {
 	// Initialize our variables to keep track of the state of the paddle and ball,
 	// and set their initial positions (by modifying their attributes in OAM).
 	const int player_width = 8, player_height = 32, ball_width = 8, ball_height = 8;
+	const int player_max_clamp_y = SCREEN_HEIGHT - player_height;
+	const int ball_max_clamp_x = SCREEN_WIDTH - ball_width, ball_max_clamp_y = SCREEN_HEIGHT - ball_height;
 	int player_velocity = 2, ball_velocity_x = 2, ball_velocity_y = 1;
 	int player_x = 5, player_y = 96;
 	int ball_x = 22, ball_y = 96;
@@ -43,26 +45,26 @@ int main(void) {
 	uint32 key_states = 0;
 	while (1) {
 		// Skip past the rest of any current V-Blank, then skip past the V-Draw
-		while(REG_DISPLAY_VCOUNT >= 160);
-		while(REG_DISPLAY_VCOUNT < 160);
+		while (REG_DISPLAY_VCOUNT >= 160);
+		while (REG_DISPLAY_VCOUNT < 160);
 
 		// Get current key states (REG_KEY_INPUT stores the states inverted)
 		key_states = ~REG_KEY_INPUT & KEY_ANY;
 
 		// Note that our physics update is tied to the framerate rather than a fixed timestep.
-		int player_max_clamp_y = SCREEN_HEIGHT - player_height;
 		if (key_states & KEY_UP) { player_y = clamp(player_y - player_velocity, 0, player_max_clamp_y); }
 		if (key_states & KEY_DOWN) { player_y = clamp(player_y + player_velocity, 0, player_max_clamp_y); }
 		if (key_states & (KEY_UP | KEY_DOWN)) { setObjectPosition(paddle_attributes, player_x, player_y); }
 
-		int ball_max_clamp_x = SCREEN_WIDTH - ball_width, ball_max_clamp_y = SCREEN_HEIGHT - ball_height;
 		if ((ball_x >= player_x && ball_x <= player_x + player_width) && (ball_y >= player_y && ball_y <= player_y + player_height)) {
+			// Respond to the ball hitting the left player's paddle
 			// This is not good physics / collision handling code.
 			ball_x = player_x + player_width;
 			ball_velocity_x = -ball_velocity_x;
 		} else {
-			if (ball_x == 0 || ball_x == ball_max_clamp_x) { ball_velocity_x = -ball_velocity_x; }
-			if (ball_y == 0 || ball_y == ball_max_clamp_y) { ball_velocity_y = -ball_velocity_y; }
+			// Bounce off the walls
+			if (ball_x <= 0 || ball_x >= ball_max_clamp_x) { ball_velocity_x = -ball_velocity_x; }
+			if (ball_y <= 0 || ball_y >= ball_max_clamp_y) { ball_velocity_y = -ball_velocity_y; }
 		}
 		ball_x = clamp(ball_x + ball_velocity_x, 0, ball_max_clamp_x);
 		ball_y = clamp(ball_y + ball_velocity_y, 0, ball_max_clamp_y);
