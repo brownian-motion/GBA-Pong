@@ -4,13 +4,13 @@ This is a simple implementation of Pong I wrote for the GameBoy Advance (GBA) as
 
 It follows [this introduction](https://www.reinterpretcast.com/writing-a-game-boy-advance-game) for the basic approach to developing the code.
 
-#Dependencies
+# Dependencies
 
 Compiling this C code into a GBA module requires [the ARM module of devkitPro](http://devkitpro.org/wiki/Getting_Started/devkitARM)
 
 Once installed, ensure `devkitpro/devkitARM/bin` is in your `PATH`
 
-#Compilation
+# Compilation
 
 The following commands will turn `main.c` into a GBA ROM `main.gba`:
 
@@ -21,18 +21,18 @@ The following commands will turn `main.c` into a GBA ROM `main.gba`:
 
 I've compiled these commands into a Makefile. Please note that `make clean` does not work on Windows.
 
-#Running Games
+# Running Games
 
 The generated ROM can be loaded onto a GBA cartridge, or run through an emulator. For Windows on x86, I recommend [VisualBoyEmulator](http://www.emuparadise.me/Nintendo_Gameboy_Advance_Emulators/Windows/VisualBoyAdvance/86). For OSx, I recommend [Boycott Advance](http://www.bannister.org/software/ba.htm).
 
-#Reference
+# Reference
 
 For more detail on the specifications of the GBA, see [akkit.org](http://www.akkit.org/info/gbatek.htm#lcdobjoamattributes)
 
-#Contributing
+# Contributing
 
 As this is a test space for code, I will not be accepting any contributions.
 
-#License
+# License
 
 This code is subject to the [GNU General Public License](https://www.gnu.org/copyleft/gpl.html).
